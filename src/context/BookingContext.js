@@ -68,7 +68,7 @@ function bookingReducer(state, action) {
         ...state,
         isBooking: false,
         bookingStep: 'completed',
-        selectedSeat: null,
+        // selectedSeat: null, //좌석 정보 보존
       };
     
     case BOOKING_ACTIONS.RESET_BOOKING:

@@ -10,10 +10,23 @@ function WaitingPage() {
   const { 
     bookingStep, 
     selectedConcert,
+    selectedSeat, // 좌석 정보 가져오기 
     completeBooking 
   } = useBooking();
 
+  // 초기 좌석 정보 저장
+  const [bookedSeat, setBookedSeat] = useState(null);
+  
+  useEffect(() => {
+    // WaitingPage 진입 시 선택된 좌석 저장
+    if (bookingStep === 'waiting' && selectedSeat && !bookedSeat) {
+      setBookedSeat(selectedSeat);
+      console.log('예약할 좌석 저장:', selectedSeat);
+    }
+  }, [bookingStep, selectedSeat, bookedSeat]);
+
   console.log('WaitingPage - localCount:', localCount, 'bookingStep:', bookingStep);
+  console.log('저장된 좌석:', bookedSeat, '현재 선택된 좌석:', selectedSeat);
 
   useEffect(() => {
     if (bookingStep !== 'waiting') {
