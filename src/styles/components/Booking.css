@@ -358,8 +358,74 @@
   .auth-form {
     padding: 30px 20px;
   }
-  
-  .waiting-container {
+
+  /* .waiting-container {
     padding: 30px 20px;
+  } */
+  /* 스타일 추가 코드 */
+  .waiting-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
   }
-}
+
+  .waiting-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+  }
+
+  .loading-spinner {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: spin 2s linear infinite;
+  }
+
+  .success-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .waiting-count {
+    font-size: 24px;
+    font-weight: bold;
+    color: #667eea;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 1s ease;
+  }
+
+  .waiting-message {
+    color: #666;
+    margin-top: 16px;
+  }
+
+  }

@@ -22,7 +22,7 @@ function Header() {
           className="logo"
           onClick={() => navigate('/concerts')}
         >
-          🎭 ZompCON
+          🎭 ZumpCON
         </div>
         
         <div className="header-actions">

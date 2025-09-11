@@ -22,21 +22,8 @@ export function useBooking() {
     }
 
     try {
+      // 예매 시작만 처리 - 카운트다운은 WaitingPage에서 처리
       bookingContext.startBooking();
-      
-      // 대기 시뮬레이션
-      const countdownInterval = setInterval(() => {
-        bookingContext.setWaitingCount(prevCount => {
-          const newCount = prevCount - 1;
-          if (newCount <= 0) {
-            clearInterval(countdownInterval);
-            // 예매 완료 처리
-            completeBooking();
-          }
-          return newCount;
-        });
-      }, 1000);
-
       return { success: true };
     } catch (error) {
       toast.error(error.message || '예매에 실패했습니다.');
@@ -57,9 +44,11 @@ export function useBooking() {
       bookingContext.completeBooking();
       
       toast.success('예약이 완료되었습니다!');
+      return { success: true };
     } catch (error) {
       toast.error('예매 처리 중 오류가 발생했습니다.');
       bookingContext.setBookingStep('selection');
+      return { success: false };
     }
   };
 

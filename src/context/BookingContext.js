@@ -48,6 +48,7 @@ function bookingReducer(state, action) {
       };
     
     case BOOKING_ACTIONS.START_BOOKING:
+      console.log('START_BOOKING dispatched'); // 디버깅용
       return {
         ...state,
         isBooking: true,
@@ -56,6 +57,7 @@ function bookingReducer(state, action) {
       };
     
     case BOOKING_ACTIONS.SET_WAITING_COUNT:
+      console.log('SET_WAITING_COUNT dispatched with:', action.payload); // 디버깅용
       return {
         ...state,
         waitingCount: action.payload,
@@ -111,16 +113,29 @@ export function BookingProvider({ children }) {
 
   // 예매 시작
   const startBooking = () => {
+    console.log('startBooking called'); // 디버깅용
     dispatch({ type: BOOKING_ACTIONS.START_BOOKING });
   };
 
   // 대기 인원 수 설정
-  const setWaitingCount = (count) => {
+  const setWaitingCount = (countOrFunction) => {
+  if (typeof countOrFunction === 'function') {
+    // 함수가 전달된 경우 현재 상태를 사용해서 새 값 계산
+    const newCount = countOrFunction(state.waitingCount);
+    console.log('setWaitingCount (function) - current:', state.waitingCount, 'new:', newCount);
     dispatch({
       type: BOOKING_ACTIONS.SET_WAITING_COUNT,
-      payload: count
+      payload: newCount
     });
-  };
+  } else {
+    // 숫자가 전달된 경우 직접 사용
+    console.log('setWaitingCount (number):', countOrFunction);
+    dispatch({
+      type: BOOKING_ACTIONS.SET_WAITING_COUNT,
+      payload: countOrFunction
+    });
+  }
+};
 
   // 예매 완료
   const completeBooking = () => {

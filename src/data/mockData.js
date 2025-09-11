@@ -9,6 +9,7 @@ export const mockConcerts = [
     venue: "세종문화회관 대극장",
     price: 80000,
     description: "세계적인 지휘자와 오케스트라가 선사하는 클래식의 향연",
+    imageUrl: "/images/concerts/aespa.jpeg",
     seats: generateSeats()
   },
   {
@@ -19,6 +20,7 @@ export const mockConcerts = [
     venue: "블루노트 서울",
     price: 65000,
     description: "최고의 재즈 뮤지션들의 즉흥 연주",
+    imageUrl: "/images/concerts/chungha.jpeg",
     seats: generateSeats()
   },
   {
@@ -29,6 +31,7 @@ export const mockConcerts = [
     venue: "올림픽공원 체조경기장",
     price: 90000,
     description: "열정적인 록 사운드로 가득한 밤",
+    imageUrl: "/images/concerts/band.jpeg",
     seats: generateSeats()
   },
   {
@@ -39,6 +42,7 @@ export const mockConcerts = [
     venue: "충무아트센터",
     price: 120000,
     description: "브로드웨이 뮤지컬의 명곡들을 한자리에서",
+    imageUrl: "/images/concerts/NJZ.jpeg",
     seats: generateSeats()
   },
   {
@@ -49,6 +53,8 @@ export const mockConcerts = [
     venue: "잠실실내체육관",
     price: 110000,
     description: "최신 히트곡과 함께하는 팝 콘서트",
+    imageUrl: "/images/concerts/Kai_Matthiesen.jpeg",
+
     seats: generateSeats()
   },
   {
@@ -59,6 +65,7 @@ export const mockConcerts = [
     venue: "국립국악원",
     price: 45000,
     description: "전통과 현대가 만나는 국악의 새로운 해석",
+    imageUrl: "/images/concerts/RIIZE.jpeg",
     seats: generateSeats()
   }
 ];
