@@ -1,4 +1,3 @@
-// src/components/concert/ConcertInfo.js
 import React from 'react';
 
 function ConcertInfo({ concert }) {
