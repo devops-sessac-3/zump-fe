@@ -1,14 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBooking } from '../../hooks/useBooking';
 
 function ConcertCard({ concert }) {
   const navigate = useNavigate();
-  const { selectConcert } = useBooking();
 
   const handleClick = () => {
-    selectConcert(concert);
-    navigate(`/concerts/${concert.id}`);
+    console.log('공연 클릭! ID:', concert.id);
+    console.log('이동할 URL:', `/waiting/${concert.id}`);
+    
+    // selectConcert 호출 없이 바로 navigate만 실행
+    navigate(`/waiting/${concert.id}`);
   };
 
   const formatDate = (dateString) => {
@@ -36,7 +37,6 @@ function ConcertCard({ concert }) {
           alt={concert.title}
           className="concert-image-img"
           onError={(e) => {
-            // 이미지 로드 실패 시 대체 처리
             e.target.style.display = 'none';
             e.target.parentElement.classList.add('concert-image-fallback');
             e.target.parentElement.innerHTML = `
