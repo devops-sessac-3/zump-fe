@@ -425,3 +425,226 @@
   color: #999;
   font-size: 14px;
 }
+
+/* AccessWaitingPage */
+.access-waiting-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.access-waiting-page .waiting-container {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  padding: 40px;
+  max-width: 650px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  color: #ffffff !important;
+}
+
+.access-waiting-page .waiting-header h1 {
+  font-size: 2.4em;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.access-waiting-page .waiting-header p {
+  color: #f8f9fa !important;
+  margin-bottom: 25px;
+  font-size: 1.15em;
+  opacity: 0.95;
+  line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.access-waiting-page .waiting-animation {
+  margin: 35px 0;
+}
+
+.access-waiting-page .waiting-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 35px 0;
+  gap: 25px;
+}
+
+.access-waiting-page .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  flex: 1;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.access-waiting-page .stat-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.access-waiting-page .stat-label {
+  font-size: 1em;
+  color: #e9ecef !important;
+  margin-bottom: 12px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.access-waiting-page .stat-value {
+  font-size: 2.5em;
+  font-weight: 800;
+  color: #ffd700 !important;
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+  letter-spacing: -1px;
+}
+
+.access-waiting-page .progress-container {
+  margin: 35px 0;
+}
+
+.access-waiting-page .progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.access-waiting-page .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  transition: width 1s ease;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.access-waiting-page .progress-text {
+  font-size: 1em;
+  color: #f8f9fa !important;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.access-waiting-page .waiting-tips {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 25px;
+  margin: 35px 0;
+  text-align: left;
+}
+
+.access-waiting-page .waiting-tips h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: #ffffff !important;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.access-waiting-page .waiting-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.access-waiting-page .waiting-tips li {
+  padding: 10px 0;
+  position: relative;
+  padding-left: 25px;
+  color: #f8f9fa !important;
+  font-size: 0.95em;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.access-waiting-page .waiting-tips li:before {
+  content: "✨";
+  position: absolute;
+  left: 0;
+  font-size: 1.1em;
+}
+
+.access-waiting-page .completion-notice {
+  background: rgba(46, 204, 113, 0.2);
+  border: 2px solid #2ecc71;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 25px;
+  animation: glow 2s infinite;
+  backdrop-filter: blur(10px);
+}
+
+.access-waiting-page .completion-notice p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(46, 204, 113, 0.6);
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+    transform: scale(1); 
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
+    transform: scale(1.02); 
+  }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .access-waiting-page .waiting-container {
+    padding: 25px 20px;
+    margin: 15px;
+  }
+  
+  .access-waiting-page .waiting-stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .access-waiting-page .waiting-header h1 {
+    font-size: 2em;
+  }
+  
+  .access-waiting-page .stat-value {
+    font-size: 2em;
+  }
+  
+  .access-waiting-page .waiting-tips {
+    padding: 20px;
+  }
+}
