@@ -1,7 +1,6 @@
-// src/context/BookingContext.js
 import React, { createContext, useContext, useReducer } from 'react';
-
 const BookingContext = createContext();
+
 
 // 초기 상태
 const initialState = {

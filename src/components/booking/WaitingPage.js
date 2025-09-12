@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBooking } from '../../hooks/useBooking';
+// eslint-disable-next-line
 import Loading from '../common/Loading';
-import '../../styles/components/Booking.css';
+import '../../styles/components/Concert.css';
 
 function WaitingPage() {
   const navigate = useNavigate();
-  const [localCount, setLocalCount] = useState(3); // 로컬 상태로 카운트 관리
+  const [localCount, setLocalCount] = useState(3);
   const { 
     bookingStep, 
     selectedConcert,
-    selectedSeat, // 좌석 정보 가져오기 
+    selectedSeat,
     completeBooking 
   } = useBooking();
 
@@ -55,29 +56,55 @@ function WaitingPage() {
   }
 
   return (
-    <div className="waiting-page">
+    <div className="access-waiting-page"> {/* AccessWaitingPage와 동일한 클래스 */}
       <div className="waiting-container">
-        <h2>예매 처리중...</h2>
+        <div className="waiting-header">
+          <h1>💳 예매 처리중...</h1>
+          <p>선택하신 좌석의 예매를 진행하고 있습니다.</p>
+        </div>
         
-        <div className="waiting-animation">
+        {/* <div className="waiting-animation">
           <Loading />
+        </div> */}
+        
+        <div className="waiting-stats">
+          <div className="stat-item">
+            <span className="stat-label">선택한 좌석</span>
+            <span className="stat-value">{selectedSeat || bookedSeat}번</span>
+          </div>
+          
+          <div className="stat-item">
+            <span className="stat-label">결제 대기 인원</span>
+            <span className="stat-value">{localCount}명</span>
+          </div>
         </div>
         
-        <div className="skeleton-container">
-          <div className="skeleton-box"></div>
-          <div className="skeleton-box"></div>
-          <div className="skeleton-box"></div>
+        <div className="progress-container">
+          <div className="progress-bar">
+            <div 
+              className="progress-fill"
+              style={{
+                width: `${((3 - localCount) / 3) * 100}%`
+              }}
+            />
+          </div>
+          <span className="progress-text">
+            {Math.round(((3 - localCount) / 3) * 100)}% 완료
+          </span>
         </div>
         
-        <div className="waiting-counter">
-          <span className="counter-label">대기 인원: </span>
-          <span className="counter-number">{localCount}</span>
-          <span className="counter-unit">명</span>
+        <div className="waiting-tips">
+          <h3>💡 예매 진행 안내</h3>
+          <ul>
+            <li>결제 처리가 진행 중입니다</li>
+            <li>이 창을 닫지 마시고 잠시만 기다려주세요</li>
+            <li>예매 완료 후 자동으로 상세 페이지로 이동됩니다</li>
+          </ul>
         </div>
         
         {localCount === 0 && (
-          <div className="completion-message">
-            <p>✅ 예약이 완료되었습니다!</p>
+          <div className="completion-notice">
+            <p>✅ 예매가 완료되었습니다!</p>
             <p>잠시 후 상세 페이지로 이동합니다...</p>
           </div>
         )}
