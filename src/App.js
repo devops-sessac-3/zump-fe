@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -7,6 +6,7 @@ import { BookingProvider } from './context/BookingContext';
 import Layout from './components/layout/Layout';
 import AuthContainer from './components/auth/AuthContainer';
 import ConcertList from './components/concert/ConcertList';
+import AccessWaitingPage from './components/concert/AccessWaitingPage';
 import ConcertDetail from './components/concert/ConcertDetail';
 import WaitingPage from './components/booking/WaitingPage';
 import { useAuth } from './hooks/useAuth';
@@ -46,6 +46,15 @@ function AppContent() {
                 </ProtectedRoute>
               } 
             />
+            {/* 공연 접속용 웨이팅 페이지 - AccessWaitingPage 사용 */}
+            <Route 
+              path="/waiting/:id" 
+              element={
+                <ProtectedRoute>
+                  <AccessWaitingPage />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/concerts/:id" 
               element={
@@ -54,6 +63,7 @@ function AppContent() {
                 </ProtectedRoute>
               } 
             />
+            {/* 예매 완료용 웨이팅 페이지 */}
             <Route 
               path="/waiting" 
               element={
@@ -65,26 +75,16 @@ function AppContent() {
             <Route path="/" element={<Navigate to="/concerts" />} />
           </Routes>
           <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+            }}
+          />
         </Layout>
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
       </BookingProvider>
     </Router>
   );
