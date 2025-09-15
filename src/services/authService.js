@@ -4,7 +4,7 @@ import { validateJWT } from '../utils/jwt';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 export const authService = {
-  // 로그인
+  // 로그인 - 기존 백엔드 API 구조에 맞춤
   async login(email, password) {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -15,20 +15,17 @@ export const authService = {
         body: JSON.stringify({
           user_email: email,
           user_password: password,
-          // user_name은 로그인에서 필요 없지만 백엔드 스키마가 같아서 빈 값 전송
-          user_name: ""
+          user_name: "" // 백엔드 스키마에 필요하지만 로그인시에는 빈값
         }),
       });
 
       if (!response.ok) {
-        // HTTP 에러 상태 처리
         let errorMessage = '로그인에 실패했습니다.';
         
         try {
           const errorData = await response.json();
           errorMessage = errorData.detail || errorMessage;
         } catch (parseError) {
-          // JSON 파싱 실패 시 기본 메시지 사용
           errorMessage = `서버 오류 (${response.status})`;
         }
         
@@ -43,16 +40,18 @@ export const authService = {
       }
 
       // JWT 토큰에서 사용자 정보 추출
+      // eslint-disable-next-line no-unused-vars
       const tokenData = validateJWT(data.access_token);
-      const user = tokenData ? {
-        id: tokenData.user_id,
-        email: tokenData.user_id,
-        name: tokenData.user_id ? tokenData.user_id.split('@')[0] : 'User'
-      } : {
+      const user = {
         id: email,
         email: email,
-        name: email.split('@')[0]
+        name: email.split('@')[0], // 이메일에서 사용자명 추출
+        token: data.access_token
       };
+
+      // 토큰 저장
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       return { 
         user,
@@ -66,7 +65,7 @@ export const authService = {
     }
   },
 
-  // 회원가입
+  // 회원가입 - 기존 백엔드 API 구조에 맞춤
   async signup(userData) {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -110,10 +109,21 @@ export const authService = {
     }
   },
 
-  // 토큰 유효성 검증 (현재 백엔드에 verify 엔드포인트가 없으므로 클라이언트 사이드에서만)
+  // 현재 사용자 정보 조회 (로컬 스토리지에서)
+  getCurrentUser() {
+    try {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.error('사용자 정보 파싱 오류:', error);
+      return null;
+    }
+  },
+
+  // 토큰 유효성 검증
   async validateToken(token) {
     try {
-      // 클라이언트 사이드 검증만
+      // 클라이언트 사이드 검증
       const tokenData = validateJWT(token);
       return tokenData !== null;
     } catch (error) {
@@ -121,9 +131,26 @@ export const authService = {
     }
   },
 
-  // 토큰 갱신 (향후 구현을 위해 준비 - 현재 백엔드에는 없음)
+  // 로그아웃
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  },
+
+  // 인증 상태 확인
+  isAuthenticated() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (!token || !user) return false;
+    
+    // 토큰 만료 확인
+    return this.validateToken(token);
+  },
+
+  // 토큰 갱신 (향후 구현을 위해 준비)
   async refreshToken(refreshToken) {
-    // 현재 백엔드에 refresh 엔드포인트가 없으므로 에러 반환
     throw new Error('토큰 갱신 기능이 구현되지 않았습니다.');
   }
 };
+

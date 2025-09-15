@@ -15,6 +15,9 @@
   --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.2);
   --border-radius: 15px;
   --transition: all 0.3s ease;
+  --success-color: #28a745;  /* 초록색 - 선택 가능 */
+  --error-color: #dc3545;    /* 빨간색 - 예약됨 */
+  --warning-color: #ffc107;  /* 주황색 - 선택됨 */
 }
 
 body {

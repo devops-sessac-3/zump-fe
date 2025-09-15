@@ -1,182 +1,102 @@
-import React, { createContext, useContext, useReducer } from 'react';
+// eslint-disable-next-line
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { bookConcertSeat } from '../data/concertAPI';
+import toast from 'react-hot-toast';
+
 const BookingContext = createContext();
 
-
-// 초기 상태
-const initialState = {
-  selectedConcert: null,
-  selectedSeat: null,
-  bookingStep: 'selection', // selection, waiting, completed
-  waitingCount: 0,
-  isBooking: false,
-};
-
-// 액션 타입
-const BOOKING_ACTIONS = {
-  SELECT_CONCERT: 'SELECT_CONCERT',
-  SELECT_SEAT: 'SELECT_SEAT',
-  CLEAR_SEAT: 'CLEAR_SEAT',
-  START_BOOKING: 'START_BOOKING',
-  SET_WAITING_COUNT: 'SET_WAITING_COUNT',
-  COMPLETE_BOOKING: 'COMPLETE_BOOKING',
-  RESET_BOOKING: 'RESET_BOOKING',
-  SET_BOOKING_STEP: 'SET_BOOKING_STEP',
-};
-
-// 리듀서
-function bookingReducer(state, action) {
-  switch (action.type) {
-    case BOOKING_ACTIONS.SELECT_CONCERT:
-      return {
-        ...state,
-        selectedConcert: action.payload,
-        selectedSeat: null,
-        bookingStep: 'selection',
-      };
-    
-    case BOOKING_ACTIONS.SELECT_SEAT:
-      return {
-        ...state,
-        selectedSeat: action.payload,
-      };
-    
-    case BOOKING_ACTIONS.CLEAR_SEAT:
-      return {
-        ...state,
-        selectedSeat: null,
-      };
-    
-    case BOOKING_ACTIONS.START_BOOKING:
-      console.log('START_BOOKING dispatched'); // 디버깅용
-      return {
-        ...state,
-        isBooking: true,
-        bookingStep: 'waiting',
-        waitingCount: 3,
-      };
-    
-    case BOOKING_ACTIONS.SET_WAITING_COUNT:
-      console.log('SET_WAITING_COUNT dispatched with:', action.payload); // 디버깅용
-      return {
-        ...state,
-        waitingCount: action.payload,
-      };
-    
-    case BOOKING_ACTIONS.COMPLETE_BOOKING:
-      return {
-        ...state,
-        isBooking: false,
-        bookingStep: 'completed',
-        // selectedSeat: null, //좌석 정보 보존
-      };
-    
-    case BOOKING_ACTIONS.RESET_BOOKING:
-      return {
-        ...initialState,
-      };
-    
-    case BOOKING_ACTIONS.SET_BOOKING_STEP:
-      return {
-        ...state,
-        bookingStep: action.payload,
-      };
-    
-    default:
-      return state;
-  }
-}
-
-export function BookingProvider({ children }) {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
-
-  // 공연 선택
-  const selectConcert = (concert) => {
-    dispatch({
-      type: BOOKING_ACTIONS.SELECT_CONCERT,
-      payload: concert
-    });
-  };
-
-  // 좌석 선택
-  const selectSeat = (seatNumber) => {
-    dispatch({
-      type: BOOKING_ACTIONS.SELECT_SEAT,
-      payload: seatNumber
-    });
-  };
-
-  // 좌석 선택 취소
-  const clearSeat = () => {
-    dispatch({ type: BOOKING_ACTIONS.CLEAR_SEAT });
-  };
-
-  // 예매 시작
-  const startBooking = () => {
-    console.log('startBooking called'); // 디버깅용
-    dispatch({ type: BOOKING_ACTIONS.START_BOOKING });
-  };
-
-  // 대기 인원 수 설정
-  const setWaitingCount = (countOrFunction) => {
-  if (typeof countOrFunction === 'function') {
-    // 함수가 전달된 경우 현재 상태를 사용해서 새 값 계산
-    const newCount = countOrFunction(state.waitingCount);
-    console.log('setWaitingCount (function) - current:', state.waitingCount, 'new:', newCount);
-    dispatch({
-      type: BOOKING_ACTIONS.SET_WAITING_COUNT,
-      payload: newCount
-    });
-  } else {
-    // 숫자가 전달된 경우 직접 사용
-    console.log('setWaitingCount (number):', countOrFunction);
-    dispatch({
-      type: BOOKING_ACTIONS.SET_WAITING_COUNT,
-      payload: countOrFunction
-    });
-  }
-};
-
-  // 예매 완료
-  const completeBooking = () => {
-    dispatch({ type: BOOKING_ACTIONS.COMPLETE_BOOKING });
-  };
-
-  // 예매 초기화
-  const resetBooking = () => {
-    dispatch({ type: BOOKING_ACTIONS.RESET_BOOKING });
-  };
-
-  // 예매 단계 설정
-  const setBookingStep = (step) => {
-    dispatch({
-      type: BOOKING_ACTIONS.SET_BOOKING_STEP,
-      payload: step
-    });
-  };
-
-  const value = {
-    ...state,
-    selectConcert,
-    selectSeat,
-    clearSeat,
-    startBooking,
-    setWaitingCount,
-    completeBooking,
-    resetBooking,
-    setBookingStep,
-  };
-
-  return (
-    <BookingContext.Provider value={value}>
-      {children}
-    </BookingContext.Provider>
-  );
-}
-
-export function useBookingContext() {
+export const useBookingContext = () => {
   const context = useContext(BookingContext);
   if (!context) {
     throw new Error('useBookingContext must be used within a BookingProvider');
   }
   return context;
-}
+};
+
+export const BookingProvider = ({ children }) => {
+  const [selectedConcert, setSelectedConcert] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [bookedSeats, setBookedSeats] = useState(new Set());
+
+  const selectConcert = (concert) => {
+    setSelectedConcert(concert);
+  };
+
+  const resetBooking = () => {
+    setSelectedSeats([]);
+    setBookedSeats(new Set());
+  };
+
+  // ✅ 좌석 예매 함수 추가
+  const bookSeats = async (seatNumbers) => {
+    if (!selectedConcert) {
+      toast.error('공연이 선택되지 않았습니다.');
+      return { success: false };
+    }
+
+    try {
+      console.log('🎫 좌석 예매 API 호출 시작:', {
+        concert: selectedConcert.concert_name,
+        concertId: selectedConcert.concert_se,
+        seats: seatNumbers
+      });
+
+      // 각 좌석에 대해 개별 API 호출
+      const bookingPromises = seatNumbers.map(seatNumber => 
+        bookConcertSeat(1, selectedConcert.concert_se, seatNumber) // userSe는 임시로 1
+      );
+
+      const results = await Promise.all(bookingPromises);
+      
+      console.log('📡 API 응답 결과:', results);
+
+      // 실패한 예매 확인
+      const failedBookings = results.filter(result => !result.success);
+      
+      if (failedBookings.length > 0) {
+        console.error('❌ 예매 실패:', failedBookings);
+        toast.error('일부 좌석 예매에 실패했습니다.');
+        return { success: false };
+      }
+
+      // ✅ 예매 성공 시 상태 업데이트
+      setBookedSeats(prev => {
+        const newBookedSeats = new Set(prev);
+        seatNumbers.forEach(seat => newBookedSeats.add(seat));
+        return newBookedSeats;
+      });
+
+      // 세션 스토리지에 예매 완료 플래그 저장
+      sessionStorage.setItem('bookingCompleted', JSON.stringify({
+        concertId: selectedConcert.concert_se,
+        bookedSeats: seatNumbers,
+        timestamp: new Date().toISOString()
+      }));
+
+      toast.success(`🎉 ${seatNumbers.join(', ')} 좌석 예매 완료!`);
+      
+      return { success: true, data: results };
+      
+    } catch (error) {
+      console.error('❌ 예매 중 오류:', error);
+      toast.error('예매 중 오류가 발생했습니다.');
+      return { success: false };
+    }
+  };
+
+  return (
+    <BookingContext.Provider value={{
+      selectedConcert,
+      selectedSeats,
+      bookedSeats,
+      selectConcert,
+      setSelectedSeats,
+      resetBooking,
+      bookSeats // ✅ 예매 함수 추가
+    }}>
+      {children}
+    </BookingContext.Provider>
+  );
+};
+
+

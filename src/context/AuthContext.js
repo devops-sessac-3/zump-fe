@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { validateJWT } from '../utils/jwt';
+import { authService } from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -62,26 +64,42 @@ export function AuthProvider({ children }) {
 
   // 토큰 검증 및 자동 로그인
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const user = validateJWT(token);
-      if (user) {
-        dispatch({
-          type: AUTH_ACTIONS.LOGIN_SUCCESS,
-          payload: { user, token }
-        });
-      } else {
-        localStorage.removeItem('token');
+    const initAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const userStr = localStorage.getItem('user');
+        
+        if (token && userStr) {
+          // 토큰 유효성 검증
+          const isValid = await authService.validateToken(token);
+          
+          if (isValid) {
+            const user = JSON.parse(userStr);
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: { user, token }
+            });
+          } else {
+            // 토큰이 유효하지 않으면 로컬 스토리지 정리
+            authService.logout();
+            dispatch({ type: AUTH_ACTIONS.TOKEN_INVALID });
+          }
+        } else {
+          dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+        }
+      } catch (error) {
+        console.error('인증 초기화 오류:', error);
+        authService.logout();
         dispatch({ type: AUTH_ACTIONS.TOKEN_INVALID });
       }
-    } else {
-      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
-    }
+    };
+
+    initAuth();
   }, []);
 
   // 로그인
   const login = (user, token) => {
-    localStorage.setItem('token', token);
+    // authService에서 이미 localStorage에 저장했으므로 여기서는 상태만 업데이트
     dispatch({
       type: AUTH_ACTIONS.LOGIN_SUCCESS,
       payload: { user, token }
@@ -90,18 +108,25 @@ export function AuthProvider({ children }) {
 
   // 로그아웃
   const logout = () => {
-    localStorage.removeItem('token');
+    authService.logout(); // localStorage 정리
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };
 
-  // 토큰 갱신
-  const refreshToken = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const user = validateJWT(token);
-      if (!user) {
+  // 토큰 갱신 (현재는 클라이언트 사이드 검증만)
+  const refreshToken = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const isValid = await authService.validateToken(token);
+        if (!isValid) {
+          logout();
+        }
+      } else {
         logout();
       }
+    } catch (error) {
+      console.error('토큰 갱신 오류:', error);
+      logout();
     }
   };
 
@@ -126,3 +151,4 @@ export function useAuthContext() {
   }
   return context;
 }
+

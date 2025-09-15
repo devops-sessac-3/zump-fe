@@ -1,92 +1,122 @@
-import React from 'react';
-import SeatButton from './SeatButton';
-import BookingButton from './BookingButton';
-import { useBooking } from '../../hooks/useBooking';
-import '../../styles/components/Booking.css';
+import React, { useState } from 'react';
+import { useBookingContext } from '../../context/BookingContext';
+import toast from 'react-hot-toast';
 
-function SeatMap({ concert }) {
-  const { selectedSeat, selectSeat, clearSeat } = useBooking();
+const SeatMap = ({ concert, seats = [] }) => {
+  const { bookedSeats, bookSeats } = useBookingContext();
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [isBooking, setIsBooking] = useState(false);
 
-  // 컴포넌트가 렌더링될 때마다 concert.seats 확인
-  console.log('=== SeatMap 렌더링 ===');
-  console.log('전체 concert 객체:', concert);
-  console.log('concert.seats:', concert.seats);
-  console.log('concert.seats 타입:', typeof concert.seats);
-  console.log('selectedSeat:', selectedSeat);
-
-  const handleSeatClick = (seatNumber) => {
-    console.log('좌석 클릭:', seatNumber);
-    console.log('해당 좌석 상태:', concert.seats[seatNumber]);
-    
-    if (concert.seats[seatNumber] === 'occupied') {
-      console.log('이미 점유된 좌석');
+  // 좌석 클릭 핸들러
+  const handleSeatClick = (seat) => {
+    // 이미 예약된 좌석이면 클릭 불가
+    if (seat.is_booked || bookedSeats.has(seat.seat_number)) {
+      toast.error('이미 예약된 좌석입니다.');
       return;
     }
-    
-    if (selectedSeat === seatNumber) {
-      console.log('선택 해제');
-      clearSeat();
-    } else {
-      console.log('좌석 선택');
-      selectSeat(seatNumber);
+
+    // 선택된 좌석 토글
+    setSelectedSeats(prev => {
+      if (prev.includes(seat.seat_number)) {
+        return prev.filter(s => s !== seat.seat_number);
+      } else {
+        return [...prev, seat.seat_number];
+      }
+    });
+  };
+
+  // ✅ 예매 완료 버튼 핸들러
+  const handleBooking = async () => {
+    if (selectedSeats.length === 0) {
+      toast.error('좌석을 선택해주세요.');
+      return;
+    }
+
+    setIsBooking(true);
+    console.log('🎫 예매 시작 - 선택된 좌석:', selectedSeats);
+
+    try {
+      const result = await bookSeats(selectedSeats);
+      
+      if (result.success) {
+        setSelectedSeats([]); // 선택 초기화
+        // 페이지 새로고침은 BookingContext에서 처리
+      }
+    } catch (error) {
+      console.error('예매 처리 중 오류:', error);
+    } finally {
+      setIsBooking(false);
     }
   };
 
-  const renderSeats = () => {
-    const seats = [];
-    console.log('=== renderSeats 시작 ===');
-    
-    for (let i = 1; i <= 40; i++) {
-      const seatNumber = i;
-      const seatStatus = concert.seats[seatNumber];
-      
-      console.log(`좌석 ${seatNumber}: 상태=${seatStatus}, 선택됨=${selectedSeat === seatNumber}`);
-      
-      seats.push(
-        <SeatButton
-          key={i}
-          seatNumber={seatNumber}
-          status={seatStatus}
-          isSelected={selectedSeat === seatNumber}
-          onClick={() => handleSeatClick(seatNumber)}
-        />
-      );
+  // 좌석 상태 결정 (기존 CSS 클래스 사용)
+  const getSeatClass = (seat) => {
+    if (seat.is_booked || bookedSeats.has(seat.seat_number)) {
+      return 'seat occupied'; // 기존 CSS 클래스
     }
-    
-    console.log('=== renderSeats 완료 ===');
-    return seats;
+    if (selectedSeats.includes(seat.seat_number)) {
+      return 'seat selected'; // 기존 CSS 클래스  
+    }
+    return 'seat available'; // 기존 CSS 클래스
   };
 
   return (
-    <div className="seats-section">
+    <div className="seats-section"> {/* 기존 CSS 클래스 */}
       <h3>좌석 선택</h3>
       
-      <div className="stage">
-        🎵 STAGE 🎵
-      </div>
-      
+      {/* 좌석 범례 - 기존 CSS 스타일 */}
       <div className="seat-legend">
         <div className="legend-item">
           <div className="legend-color available"></div>
-          <span>선택 가능</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color occupied"></div>
-          <span>선택 불가</span>
+          <span>예약 가능</span>
         </div>
         <div className="legend-item">
           <div className="legend-color selected"></div>
           <span>선택됨</span>
         </div>
+        <div className="legend-item">
+          <div className="legend-color occupied"></div>
+          <span>예약됨</span>
+        </div>
       </div>
-      
+
+      {/* 무대 - 기존 CSS 스타일 */}
+      <div className="stage">STAGE</div>
+
+      {/* 좌석 맵 - 기존 CSS 스타일 */}
       <div className="seats-grid">
-        {renderSeats()}
+        {seats.map((seat) => (
+          <div
+            key={seat.seat_se || seat.seat_number}
+            className={getSeatClass(seat)} // 기존 CSS 클래스 사용
+            onClick={() => handleSeatClick(seat)}
+          >
+            {seat.seat_number}
+          </div>
+        ))}
       </div>
-      
-      <BookingButton />
+
+      {/* 선택된 좌석 정보 */}
+      {selectedSeats.length > 0 && (
+        <div className="selected-seats-info">
+          <h4>선택된 좌석: {selectedSeats.join(', ')}</h4>
+          <p>총 금액: {(selectedSeats.length * (concert.price || concert.concert_price || 0)).toLocaleString()}원</p>
+        </div>
+      )}
+
+      {/* ✅ 예매 완료 버튼 */}
+      <div className="booking-actions">
+        <button
+          className="btn btn-primary"
+          onClick={handleBooking}
+          disabled={selectedSeats.length === 0 || isBooking}
+        >
+          {isBooking ? '예매 처리 중...' : `${selectedSeats.length}개 좌석 예매하기`}
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default SeatMap;
+

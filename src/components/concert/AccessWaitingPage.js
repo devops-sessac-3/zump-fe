@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// eslint-disable-next-line
-import Loading from '../common/Loading';
 import '../../styles/components/Concert.css';
 
 function AccessWaitingPage() {
@@ -14,6 +12,12 @@ function AccessWaitingPage() {
 
   console.log('AccessWaitingPage - 공연 ID:', id);
 
+  // navigate를 useCallback으로 감싸서 안전하게 처리
+  const navigateToConcert = useCallback(() => {
+    console.log('웨이팅 완료! 공연 디테일로 이동:', `/concerts/${id}`);
+    navigate(`/concerts/${id}`, { replace: true });
+  }, [id, navigate]);
+
   useEffect(() => {
     console.log('AccessWaitingPage useEffect 실행');
     
@@ -23,8 +27,10 @@ function AccessWaitingPage() {
         console.log('웨이팅 시간:', prev);
         if (prev <= 1) {
           clearInterval(timer);
-          console.log('웨이팅 완료! 공연 디테일로 이동:', `/concerts/${id}`);
-          navigate(`/concerts/${id}`, { replace: true });
+          // setTimeout으로 네비게이션을 다음 렌더 사이클로 미룸
+          setTimeout(() => {
+            navigateToConcert();
+          }, 0);
           return 0;
         }
         return prev - 1;
@@ -40,7 +46,7 @@ function AccessWaitingPage() {
       clearInterval(timer);
       clearInterval(queueTimer);
     };
-  }, [id, navigate]);
+  }, [navigateToConcert]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -56,12 +62,7 @@ function AccessWaitingPage() {
         <div className="waiting-header">
           <h1>🎭 공연 접속 대기열</h1>
           <p>많은 분들이 동시에 접속하여 대기열에 진입하셨습니다.</p>
-          {/* <p>공연 ID: {id}</p> */}
         </div>
-        
-        {/* <div className="waiting-animation">
-          <Loading />
-        </div> */}
         
         <div className="waiting-stats">
           <div className="stat-item">

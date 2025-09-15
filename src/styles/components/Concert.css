@@ -1,162 +1,54 @@
-.concert-list-container {
-  animation: slideUp 0.5s ease;
+:root {
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --success-color: #4CAF50;
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+  --border-radius: 15px;
+  --transition: all 0.3s ease;
+  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  --card-shadow-hover: 0 20px 40px rgba(0,0,0,0.2);
 }
 
-@keyframes slideUp {
+/* Concert List */
+.concert-list-container {
+  animation: fadeIn 0.5s ease;
+  padding: 40px 20px;
+}
+
+@keyframes fadeIn {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+  font-size: 3rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .concert-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.concert-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--card-shadow);
+.error-message {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 20px;
   backdrop-filter: blur(10px);
 }
 
-.concert-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--card-shadow-hover);
-}
-
-.concert-image {
-  width: 100%;
-  height: 400px;
-  background: var(--background-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  padding: 20px;
-}
-
-.concert-image-text {
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.concert-card-content {
-  padding: 20px;
-}
-
-.concert-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.concert-details p {
-  margin-bottom: 8px;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.concert-seats {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.concert-card-footer {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.view-details {
-  color: var(--primary-color);
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* Concert Detail */
-.concert-detail-container {
-  animation: slideUp 0.5s ease;
-}
-
-.detail-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 40px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: var(--border-radius);
-  padding: 30px;
-  box-shadow: var(--card-shadow);
-  backdrop-filter: blur(10px);
-}
-
-.concert-info {
-  text-align: center;
-}
-
-.concert-image-large {
-  width: 100%;
-  height: 300px;
-  background: var(--background-gradient);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.concert-title-large {
-  font-size: 28px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.concert-meta {
-  margin-bottom: 30px;
-}
-
-.meta-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.meta-label {
-  font-weight: 600;
-  color: #666;
-}
-
-.meta-value {
-  color: #333;
-  font-weight: 500;
-}
-
-.concert-description {
-  text-align: left;
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.concert-description h4 {
-  margin-bottom: 10px;
-  color: var(--primary-color);
-}
-
-/* 공연 카드 이미지 스타일 */
+/* Concert Cards */
 .concert-card {
   background: rgba(255,255,255,0.95);
   border-radius: 20px;
@@ -187,7 +79,6 @@
   transition: transform 0.3s ease;
   display: block;
 }
-
 
 .concert-card:hover .concert-image-img {
   transform: scale(1.05);
@@ -249,6 +140,14 @@
   margin-bottom: 16px;
 }
 
+.concert-details p {
+  margin-bottom: 8px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .concert-meta {
   display: flex;
   align-items: center;
@@ -277,8 +176,49 @@
   font-weight: 600;
 }
 
-/* 상세 페이지 이미지 스타일 */
-.concert-info {
+/* Concert Detail */
+.concert-detail-container {
+  animation: fadeIn 0.5s ease;
+  padding: 20px;
+}
+
+.concert-header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-btn, .refresh-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.back-btn:hover, .refresh-btn:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+}
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+}
+
+.concert-info-section {
   text-align: center;
 }
 
@@ -289,16 +229,20 @@
   margin-bottom: 24px;
   overflow: hidden;
   position: relative;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .concert-detail-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;  /* cover에서 contain으로 변경 */
+  object-fit: contain;
   border-radius: 15px;
   transition: transform 0.3s ease;
-  background: #f8f9fa;  /* 배경색 추가 */
-
+  background: #f8f9fa;
 }
 
 .concert-detail-image:hover {
@@ -306,26 +250,16 @@
 }
 
 .concert-image-text-large {
-  color: #667eea;  /* 흰색에서 보라색으로 */
+  color: #667eea;
   font-size: 20px;
   font-weight: bold;
-  text-shadow: none;  /* 텍스트 섀도우 제거 */
+  text-shadow: none;
   text-align: center;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  /* color: white;
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  text-align: center;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%; */
 }
 
 .concert-title-large {
@@ -342,32 +276,37 @@
   margin-bottom: 24px;
 }
 
-.detail-item {
+.detail-item, .meta-item {
   display: flex;
   justify-content: space-between;
   padding: 12px 0;
   border-bottom: 1px solid #eee;
 }
 
-.detail-item:last-child {
+.detail-item:last-child, .meta-item:last-child {
   border-bottom: none;
 }
 
-.detail-label {
+.detail-label, .meta-label, .label {
   font-weight: 600;
   color: #666;
 }
 
-.detail-value {
+.detail-value, .meta-value, .value {
   color: #333;
   font-weight: 500;
+}
+
+.available-seats {
+  color: #667eea;
+  font-weight: 700;
 }
 
 .concert-description {
   text-align: left;
 }
 
-.concert-description h4 {
+.concert-description h3, .concert-description h4 {
   color: #667eea;
   margin-bottom: 12px;
   font-size: 18px;
@@ -379,272 +318,586 @@
   font-size: 16px;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .concert-image {
-    height: 320px;
-  }
-  
-  .concert-image-large {
-    width: 100%;
-    height: 300px;
-    border-radius: 15px;
-    margin-bottom: 24px;
-    overflow: hidden;
-    position: relative;
-    background: #f8f9fa;  /* 배경색 추가 */
-    border: 1px solid #e9ecef;  /* 테두리 추가 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .concert-card-content {
-    padding: 16px;
-  }
-  
-  .concert-title {
-    font-size: 18px;
-  }
-  
-  .concert-title-large {
-    font-size: 24px;
-  }
-}
-
-/* 로딩 상태 스타일 */
-.concert-image-loading {
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.concert-image-loading::after {
-  content: "이미지 로딩중...";
-  color: #999;
-  font-size: 14px;
-}
-
-/* AccessWaitingPage */
-.access-waiting-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.access-waiting-page .waiting-container {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  padding: 40px;
-  max-width: 650px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  color: #ffffff !important;
-}
-
-.access-waiting-page .waiting-header h1 {
-  font-size: 2.4em;
-  margin-bottom: 15px;
-  font-weight: 700;
-  color: #ffffff !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(45deg, #ffd700, #ffed4e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.access-waiting-page .waiting-header p {
-  color: #f8f9fa !important;
-  margin-bottom: 25px;
-  font-size: 1.15em;
-  opacity: 0.95;
-  line-height: 1.5;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.access-waiting-page .waiting-animation {
-  margin: 35px 0;
-}
-
-.access-waiting-page .waiting-stats {
-  display: flex;
-  justify-content: space-around;
-  margin: 35px 0;
-  gap: 25px;
-}
-
-.access-waiting-page .stat-item {
+/* Loading & Error States */
+.loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 25px 20px;
-  background: rgba(255, 255, 255, 0.1);
+  justify-content: center;
+  min-height: 300px;
+  gap: 20px;
+}
+
+.error-container, .no-data-container, .not-found-container {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  margin: 20px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a6fd8;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+  background: #667eea;
+  color: white;
+}
+
+/* Seats Section */
+.seats-section {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  flex: 1;
-  transition: transform 0.3s ease, background 0.3s ease;
 }
 
-.access-waiting-page .stat-item:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.15);
+.seatmap-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 30px;
 }
 
-.access-waiting-page .stat-label {
-  font-size: 1em;
-  color: #e9ecef !important;
-  margin-bottom: 12px;
+.seats-section h3 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.stage {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.seat-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  font-size: 14px;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.access-waiting-page .stat-value {
-  font-size: 2.5em;
-  font-weight: 800;
-  color: #ffd700 !important;
-  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
-  letter-spacing: -1px;
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.access-waiting-page .progress-container {
-  margin: 35px 0;
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid #ddd;
 }
 
-.access-waiting-page .progress-bar {
+.legend-color.available {
+  background: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.legend-color.occupied {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+.legend-color.selected {
+  background: #ff9800;
+  border-color: #ff9800;
+}
+
+.seats-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.seat.available {
+  background: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.seat.available:hover {
+  background: #45a049;
+}
+
+.seat.occupied {
+  background: #f44336;
+  border-color: #f44336;
+  cursor: not-allowed;
+}
+
+.seat.selected {
+  background: #ff9800;
+  border-color: #ff9800;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+}
+
+.no-seats-message {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+/* WaitingPage 스타일 */
+.access-waiting-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.waiting-container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
   width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 15px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.6s ease-out;
 }
 
-.access-waiting-page .progress-fill {
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.waiting-header h1 {
+  color: #4c51bf;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.waiting-header p {
+  color: #718096;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* 카운트다운 스타일 */
+.waiting-countdown {
+  margin: 30px 0;
+}
+
+.countdown-number {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #4c51bf;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.waiting-countdown p {
+  margin-top: 15px;
+  color: #4a5568;
+  font-size: 1.1rem;
+}
+
+/* 예매 처리 중 스타일 */
+.booking-process {
+  margin: 30px 0;
+}
+
+.process-info {
+  margin-bottom: 20px;
+}
+
+.process-info p {
+  color: #4a5568;
+  font-size: 1.1rem;
+}
+
+.process-info strong {
+  color: #4c51bf;
+  font-weight: bold;
+}
+
+/* 통계 정보 스타일 */
+.waiting-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.stat-item {
+  background: rgba(79, 70, 229, 0.1);
+  border: 2px solid rgba(79, 70, 229, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: #4c51bf;
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+/* 진행률 바 스타일 */
+.progress-container {
+  margin: 25px 0;
+}
+
+.progress-bar {
+  background: #e2e8f0;
+  border-radius: 25px;
+  height: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
-  background-size: 200% 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 25px;
+  transition: width 0.3s ease;
   animation: shimmer 2s infinite;
-  transition: width 1s ease;
-  border-radius: 10px;
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
 }
 
-.access-waiting-page .progress-text {
-  font-size: 1em;
-  color: #f8f9fa !important;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+.progress-text {
+  color: #4c51bf;
+  font-weight: bold;
+  font-size: 0.9rem;
 }
 
-.access-waiting-page .waiting-tips {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 25px;
-  margin: 35px 0;
+/* 안내사항 스타일 */
+.waiting-tips {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px 0;
   text-align: left;
 }
 
-.access-waiting-page .waiting-tips h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.2em;
-  color: #ffffff !important;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+.waiting-tips h3 {
+  color: #059669;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
 }
 
-.access-waiting-page .waiting-tips ul {
+.waiting-tips ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.access-waiting-page .waiting-tips li {
-  padding: 10px 0;
+.waiting-tips li {
+  color: #374151;
+  margin-bottom: 8px;
+  padding-left: 20px;
   position: relative;
-  padding-left: 25px;
-  color: #f8f9fa !important;
-  font-size: 0.95em;
-  line-height: 1.4;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
 }
 
-.access-waiting-page .waiting-tips li:before {
-  content: "✨";
+.waiting-tips li:before {
+  content: "✓";
   position: absolute;
   left: 0;
-  font-size: 1.1em;
+  color: #059669;
+  font-weight: bold;
 }
 
-.access-waiting-page .completion-notice {
-  background: rgba(46, 204, 113, 0.2);
-  border: 2px solid #2ecc71;
-  border-radius: 15px;
+/* 완료 알림 스타일 */
+.completion-notice {
+  background: rgba(16, 185, 129, 0.15);
+  border: 2px solid #10b981;
+  border-radius: 12px;
   padding: 20px;
-  margin-top: 25px;
-  animation: glow 2s infinite;
-  backdrop-filter: blur(10px);
+  margin: 25px 0;
+  animation: fadeIn 0.5s ease-in;
 }
 
-.access-waiting-page .completion-notice p {
-  margin: 0;
-  font-weight: 700;
-  font-size: 1.2em;
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(46, 204, 113, 0.6);
+.completion-notice p {
+  color: #059669;
+  font-weight: bold;
+  margin: 5px 0;
+  font-size: 1.1rem;
 }
 
-@keyframes glow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
-    transform: scale(1); 
-  }
-  50% { 
-    box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
-    transform: scale(1.02); 
-  }
+.completion-notice p:first-child {
+  font-size: 1.2rem;
 }
 
-/* 모바일 반응형 */
+/* Loading Component */
+.loading-spinner {
+  position: relative;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(102, 126, 234, 0.3);
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-large .spinner {
+  width: 60px;
+  height: 60px;
+  border-width: 6px;
+}
+
+.loading-small .spinner {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* Mock Data Banner */
+.mock-data-banner {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  color: #856404;
+}
+
+.mock-data-notice {
+  color: #856404;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* 반응형 디자인 */
 @media (max-width: 768px) {
-  .access-waiting-page .waiting-container {
-    padding: 25px 20px;
-    margin: 15px;
+  .page-title {
+    font-size: 2rem;
   }
-  
-  .access-waiting-page .waiting-stats {
+
+  .concert-header-nav {
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .detail-content {
+    grid-template-columns: 1fr;
     gap: 20px;
-  }
-  
-  .access-waiting-page .waiting-header h1 {
-    font-size: 2em;
-  }
-  
-  .access-waiting-page .stat-value {
-    font-size: 2em;
-  }
-  
-  .access-waiting-page .waiting-tips {
     padding: 20px;
+  }
+
+  .concert-image, .concert-image-large {
+    height: 250px;
+  }
+
+  .concert-title-large {
+    font-size: 24px;
+  }
+
+  .seats-grid {
+    grid-template-columns: repeat(6, 1fr);
+    max-width: 300px;
+  }
+
+  .concert-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seat-legend {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .waiting-container {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .waiting-header h1 {
+    font-size: 2rem;
+  }
+
+  .countdown-number {
+    font-size: 3rem;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .waiting-tips {
+    text-align: center;
+  }
+
+  .waiting-tips li {
+    text-align: left;
+  }
+
+  .waiting-stats {
+    gap: 10px;
+  }
+
+  .concert-card-content {
+    padding: 16px;
+  }
+
+  .concert-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .waiting-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .countdown-number {
+    font-size: 2.5rem;
+  }
+
+  .waiting-container {
+    padding: 25px 15px;
+  }
+
+  .concert-image {
+    height: 280px;
+  }
+
+  .seats-grid {
+    max-width: 280px;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .seat {
+    width: 35px;
+    height: 35px;
+    font-size: 11px;
   }
 }

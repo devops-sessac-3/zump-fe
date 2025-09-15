@@ -1,80 +1,190 @@
 import { useBookingContext } from '../context/BookingContext';
+import { bookingService } from '../services/concertService';
 import { useConcerts } from './useConcerts';
-// eslint-disable-next-line no-unused-vars
-import { bookingService } from '../services/bookingService';
 import toast from 'react-hot-toast';
 
-export function useBooking() {
-  const bookingContext = useBookingContext();
+export const useBooking = () => {
+  const {
+    selectedConcert,
+    selectedSeat,
+    bookingStep,
+    waitingCount,
+    isBooking,
+    selectConcert,
+    selectSeat,
+    clearSeat,
+    startBooking,
+    setWaitingCount,
+    completeBooking,
+    resetBooking,
+    setBookingStep,
+  } = useBookingContext();
+
   const { updateConcertSeats } = useConcerts();
 
-  const bookSeat = async () => {
-    const { selectedConcert, selectedSeat } = bookingContext;
-    
+  // 좌석 예매 실행
+  const executeBooking = async () => {
     if (!selectedConcert || !selectedSeat) {
       toast.error('공연과 좌석을 선택해주세요.');
       return { success: false };
     }
 
-    // 이미 예약된 좌석인지 확인
-    if (selectedConcert.seats[selectedSeat] === 'occupied') {
-      toast.error('이미 선택된 좌석입니다.');
-      return { success: false };
-    }
-
     try {
-      // 예매 시작만 처리 - 카운트다운은 WaitingPage에서 처리
-      bookingContext.startBooking();
-      return { success: true };
+      // 예매 시작
+      startBooking();
+
+      // 대기 시뮬레이션
+      await simulateWaiting();
+
+      // 실제 예매 API 호출 (mock or backend)
+      const result = await bookingService.bookSeat(
+        selectedConcert.concert_se,
+        selectedSeat
+      );
+
+      // 좌석 상태 업데이트 → 예약된 좌석은 다시 클릭 불가
+      updateConcertSeats(
+        selectedConcert.concert_se,
+        selectedSeat,
+        'occupied'
+      );
+
+      // 예매 완료
+      completeBooking();
+
+      toast.success(`좌석 ${selectedSeat} 예매가 완료되었습니다!`);
+
+      return {
+        success: true,
+        booking: result,
+        concertId: selectedConcert.concert_se,
+        seatNumber: selectedSeat,
+      };
     } catch (error) {
-      toast.error(error.message || '예매에 실패했습니다.');
-      bookingContext.setBookingStep('selection');
-      return { success: false, error: error.message };
+      console.error('예매 실행 오류:', error);
+
+      resetBooking();
+
+      const errorMessage = error.message || '예매 처리 중 오류가 발생했습니다.';
+      toast.error(errorMessage);
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
     }
   };
 
-  const completeBooking = async (seatToBook = null) => {
-    console.log('=== completeBooking 시작 ===');
-    
-    try {
-      const { selectedConcert, selectedSeat } = bookingContext;
-      const targetSeat = seatToBook || selectedSeat; // 파라미터가 있으면 우선 사용
-      
-      console.log('선택된 공연:', selectedConcert);
-      console.log('원래 선택된 좌석:', selectedSeat);
-      console.log('예약할 좌석:', targetSeat);
-      console.log('updateConcertSeats 함수:', updateConcertSeats);
-      
-      if (!targetSeat) {
-        console.error('예약할 좌석이 없습니다!');
-        return { success: false };
-      }
+  // 대기 시뮬레이션
+  const simulateWaiting = async () => {
+    return new Promise((resolve) => {
+      let count = 3;
+      setWaitingCount(count);
 
-      // 서버에 예매 요청
-      console.log('서버 예매 요청 시작...');
-      await bookingService.bookSeat(selectedConcert.id, targetSeat);
-      console.log('서버 예매 요청 완료');
-      
-      // 로컬 상태 업데이트
-      console.log('로컬 상태 업데이트 시작...');
-      updateConcertSeats(selectedConcert.id, targetSeat);
-      console.log('로컬 상태 업데이트 완료');
-      
-      bookingContext.completeBooking();
-      
-      toast.success('예약이 완료되었습니다!');
+      const interval = setInterval(() => {
+        count -= 1;
+        setWaitingCount(count);
+
+        if (count <= 0) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+    });
+  };
+
+  // 좌석 선택 with 유효성 검사
+  const selectSeatWithValidation = (seatNumber, concertSeats) => {
+    if (!concertSeats) {
+      toast.error('좌석 정보를 불러오는 중입니다.');
+      return false;
+    }
+
+    const seatStatus = concertSeats[seatNumber];
+
+    if (seatStatus === 'occupied') {
+      toast.error('이미 예약된 좌석입니다.');
+      return false;
+    }
+
+    if (seatStatus !== 'available') {
+      toast.error('선택할 수 없는 좌석입니다.');
+      return false;
+    }
+
+    selectSeat(seatNumber);
+    return true;
+  };
+
+  // 예매 취소
+  const cancelBooking = async (bookingId) => {
+    try {
+      await bookingService.cancelBooking(bookingId);
+      toast.success('예매가 취소되었습니다.');
       return { success: true };
     } catch (error) {
-      console.error('completeBooking 에러:', error);
-      toast.error('예매 처리 중 오류가 발생했습니다.');
-      bookingContext.setBookingStep('selection');
-      return { success: false };
+      const errorMessage =
+        error.message || '예매 취소 중 오류가 발생했습니다.';
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
+  };
+
+  // 예매 데이터 검증
+  const validateBookingData = () => {
+    if (!selectedConcert) {
+      return { valid: false, error: '공연을 선택해주세요.' };
+    }
+
+    if (!selectedSeat) {
+      return { valid: false, error: '좌석을 선택해주세요.' };
+    }
+
+    if (isBooking) {
+      return { valid: false, error: '이미 예매 진행 중입니다.' };
+    }
+
+    return { valid: true };
+  };
+
+  // 예매 정보 포맷팅
+  const getBookingInfo = () => {
+    if (!selectedConcert || !selectedSeat) {
+      return null;
+    }
+
+    return {
+      concertId: selectedConcert.concert_se,
+      concertName: selectedConcert.concert_name,
+      concertDate: selectedConcert.concert_date,
+      concertTime: selectedConcert.concert_time,
+      concertVenue: selectedConcert.concert_venue,
+      seatNumber: selectedSeat,
+      price: selectedConcert.concert_price,
+      totalPrice: selectedConcert.concert_price,
+    };
   };
 
   return {
-    ...bookingContext,
-    bookSeat,
-    completeBooking,
+    // 상태
+    selectedConcert,
+    selectedSeat,
+    bookingStep,
+    waitingCount,
+    isBooking,
+
+    // 액션
+    selectConcert,
+    selectSeat: selectSeatWithValidation,
+    clearSeat,
+    executeBooking,
+    cancelBooking,
+    resetBooking,
+    setBookingStep,
+
+    // 유틸리티
+    validateBookingData,
+    getBookingInfo,
   };
-}
+};
+
