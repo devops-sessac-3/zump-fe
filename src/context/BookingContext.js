@@ -27,7 +27,59 @@ export const BookingProvider = ({ children }) => {
     setBookedSeats(new Set());
   };
 
-  // ✅ 좌석 예매 함수 추가
+  // 예매 완료 후 즉시 실행할 이벤트 발생 함수
+  const triggerBookingSuccessEvents = useCallback((concertId, bookedSeatNumbers) => {
+    console.log('🚀 예매 완료 이벤트 발생 시작:', { concertId, bookedSeatNumbers });
+
+    // 1. sessionStorage 플래그 설정
+    const bookingCompletedData = {
+      concertId: concertId,
+      bookedSeats: bookedSeatNumbers,
+      timestamp: Date.now(),
+      success: true
+    };
+    
+    sessionStorage.setItem('bookingCompleted', JSON.stringify(bookingCompletedData));
+    console.log('📝 sessionStorage 플래그 설정 완료');
+
+    // 2. 실시간 예매 완료 이벤트 발생 (ConcertDetail이 감지)
+    window.dispatchEvent(new CustomEvent('realTimeBookingSuccess', {
+      detail: {
+        concertId: concertId,
+        bookedSeats: bookedSeatNumbers,
+        timestamp: Date.now()
+      }
+    }));
+
+    // 3. 좌석 업데이트 이벤트도 발생
+    window.dispatchEvent(new CustomEvent('seatsUpdated', {
+      detail: {
+        concertId: concertId,
+        timestamp: Date.now()
+      }
+    }));
+
+    // 4. 일반 예매 완료 이벤트
+    window.dispatchEvent(new CustomEvent('bookingCompleted', {
+      detail: {
+        concertId: concertId,
+        bookedSeats: bookedSeatNumbers,
+        timestamp: Date.now()
+      }
+    }));
+
+    console.log('📡 모든 실시간 이벤트 발생 완료');
+
+    // 5. 글로벌 강제 새로고침 함수 호출
+    if (typeof window.forceConcertDetailRefresh === 'function') {
+      console.log('🔧 글로벌 강제 새로고침 실행');
+      setTimeout(() => {
+        window.forceConcertDetailRefresh();
+      }, 200); // 약간의 지연으로 안정성 확보
+    }
+  }, []);
+
+  // 좌석 예매 함수
   const bookSeats = async (seatNumbers) => {
     if (!selectedConcert) {
       toast.error('공연이 선택되지 않았습니다.');
@@ -36,14 +88,14 @@ export const BookingProvider = ({ children }) => {
 
     try {
       console.log('🎫 좌석 예매 API 호출 시작:', {
-        concert: selectedConcert.concert_name,
-        concertId: selectedConcert.concert_se,
+        concert: selectedConcert.concert_name || selectedConcert.name,
+        concertId: selectedConcert.concert_se || selectedConcert.id,
         seats: seatNumbers
       });
 
       // 각 좌석에 대해 개별 API 호출
       const bookingPromises = seatNumbers.map(seatNumber => 
-        bookConcertSeat(1, selectedConcert.concert_se, seatNumber) // userSe는 임시로 1
+        bookConcertSeat(1, selectedConcert.concert_se || selectedConcert.id, seatNumber) // userSe는 임시로 1
       );
 
       const results = await Promise.all(bookingPromises);
@@ -59,28 +111,27 @@ export const BookingProvider = ({ children }) => {
         return { success: false };
       }
 
-      // ✅ 예매 성공 시 상태 업데이트
+      // 예매 성공 시 상태 업데이트
       setBookedSeats(prev => {
         const newBookedSeats = new Set(prev);
         seatNumbers.forEach(seat => newBookedSeats.add(seat));
         return newBookedSeats;
       });
 
-      // 세션 스토리지에 예매 완료 플래그 저장
-      sessionStorage.setItem('bookingCompleted', JSON.stringify({
-        concertId: selectedConcert.concert_se,
-        bookedSeats: seatNumbers,
-        timestamp: new Date().toISOString()
-      }));
+      const concertId = selectedConcert.concert_se || selectedConcert.id;
 
+      // 예매 완료 후 즉시 모든 이벤트 발생
+      triggerBookingSuccessEvents(concertId, seatNumbers);
+
+      // 성공 토스트 메시지
       toast.success(`🎉 ${seatNumbers.join(', ')} 좌석 예매 완료!`);
       
-      return { success: true, data: results };
+      return { success: true, data: results, bookedSeats: seatNumbers };
       
     } catch (error) {
       console.error('❌ 예매 중 오류:', error);
       toast.error('예매 중 오류가 발생했습니다.');
-      return { success: false };
+      return { success: false, error: error.message };
     }
   };
 
@@ -92,11 +143,13 @@ export const BookingProvider = ({ children }) => {
       selectConcert,
       setSelectedSeats,
       resetBooking,
-      bookSeats // ✅ 예매 함수 추가
+      bookSeats,
+      triggerBookingSuccessEvents // 외부에서도 호출 가능하도록 export
     }}>
       {children}
     </BookingContext.Provider>
   );
 };
+
 
 
