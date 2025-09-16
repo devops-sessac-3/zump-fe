@@ -25,7 +25,7 @@ const SeatMap = ({ concert, seats = [] }) => {
     });
   };
 
-  // ✅ 예매 완료 버튼 핸들러
+  // 예매 완료 버튼 핸들러 
   const handleBooking = async () => {
     if (selectedSeats.length === 0) {
       toast.error('좌석을 선택해주세요.');
@@ -39,11 +39,21 @@ const SeatMap = ({ concert, seats = [] }) => {
       const result = await bookSeats(selectedSeats);
       
       if (result.success) {
-        setSelectedSeats([]); // 선택 초기화
-        // 페이지 새로고침은 BookingContext에서 처리
+        console.log(' SeatMap: 예매 성공 처리 시작');
+        
+        // 선택된 좌석 즉시 초기화
+        setSelectedSeats([]);
+        
+        // 추가 성공 처리 (BookingContext에서 이미 이벤트를 발생시키므로 여기서는 로컬 처리만)
+        console.log('SeatMap: 예매 완료, 로컬 상태 정리 완료');
+        
+      } else {
+        console.error('❌ SeatMap: 예매 실패:', result.error);
+        toast.error(result.error || '예매 중 오류가 발생했습니다.');
       }
     } catch (error) {
-      console.error('예매 처리 중 오류:', error);
+      console.error('❌ SeatMap: 예매 처리 중 오류:', error);
+      toast.error('예매 처리 중 오류가 발생했습니다.');
     } finally {
       setIsBooking(false);
     }
@@ -61,10 +71,9 @@ const SeatMap = ({ concert, seats = [] }) => {
   };
 
   return (
-    <div className="seats-section"> {/* 기존 CSS 클래스 */}
+    <div className="seats-section"> 
       <h3>좌석 선택</h3>
       
-      {/* 좌석 범례 - 기존 CSS 스타일 */}
       <div className="seat-legend">
         <div className="legend-item">
           <div className="legend-color available"></div>
@@ -80,10 +89,8 @@ const SeatMap = ({ concert, seats = [] }) => {
         </div>
       </div>
 
-      {/* 무대 - 기존 CSS 스타일 */}
       <div className="stage">STAGE</div>
 
-      {/* 좌석 맵 - 기존 CSS 스타일 */}
       <div className="seats-grid">
         {seats.map((seat) => (
           <div
@@ -96,7 +103,6 @@ const SeatMap = ({ concert, seats = [] }) => {
         ))}
       </div>
 
-      {/* 선택된 좌석 정보 */}
       {selectedSeats.length > 0 && (
         <div className="selected-seats-info">
           <h4>선택된 좌석: {selectedSeats.join(', ')}</h4>
@@ -104,7 +110,6 @@ const SeatMap = ({ concert, seats = [] }) => {
         </div>
       )}
 
-      {/* ✅ 예매 완료 버튼 */}
       <div className="booking-actions">
         <button
           className="btn btn-primary"
@@ -119,4 +124,3 @@ const SeatMap = ({ concert, seats = [] }) => {
 };
 
 export default SeatMap;
-
