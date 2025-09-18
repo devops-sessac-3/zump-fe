@@ -188,23 +188,6 @@ function ConcertList() {
         </div>
       )}
       
-      {/* 디버그 정보 (개발 환경에서만 표시) */}
-      {/* {process.env.NODE_ENV === 'development' && (
-        <div style={{ 
-          margin: '10px 0', 
-          padding: '10px', 
-          backgroundColor: '#f0f0f0', 
-          fontSize: '12px',
-          borderRadius: '5px'
-        }}>
-          <p>총 공연 수: {concerts.length}</p>
-          <p>유효한 공연 수: {validConcerts.length}</p>
-          <p>로딩 상태: {loading ? '로딩 중' : '완료'}</p>
-          <p>목 데이터 사용: {usingMockData ? 'Yes' : 'No'}</p>
-          {error && <p style={{color: 'red'}}>오류: {error}</p>}
-        </div>
-      )} */}
-      
       <div className="concert-grid">
         {validConcerts.map((concert) => (
           <ConcertCard 
@@ -214,7 +197,6 @@ function ConcertList() {
         ))}
       </div>
       
-      {/* 새로고침 버튼 */}
       <div style={{ textAlign: 'center', marginTop: '30px' }}>
         <button 
           onClick={handleRetry} 
