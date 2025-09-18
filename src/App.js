@@ -12,7 +12,7 @@ import WaitingPage from './components/booking/WaitingPage'; // 예매용 Waiting
 import { useAuth } from './hooks/useAuth';
 import './styles/global.css';
 
-// Protected Route 컴포넌트
+// Protected Route 컴포넌트 //
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/auth" />;
