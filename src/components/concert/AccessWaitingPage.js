@@ -48,7 +48,6 @@ function AccessWaitingPage() {
           }, 0)) || 1;
         }
       }
-      
       console.log('사용자 SE:', userSe, typeof userSe);
       return Math.max(1, parseInt(userSe));
     } catch (error) {
@@ -327,7 +326,7 @@ function AccessWaitingPage() {
         <div className="waiting-tips">
           <h3>💡 대기 중 안내사항</h3>
           <ul>
-            <li>이 창을 새로고림하거나 닫지 마세요</li>
+            <li>이 창을 새로고침하거나 닫지 마세요</li>
             <li>대기열을 벗어나면 처음부터 다시 대기해야 합니다</li>
             <li>실시간으로 순번이 업데이트됩니다</li>
             <li>순번이 가까워지면 자동으로 입장됩니다</li>

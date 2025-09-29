@@ -37,6 +37,22 @@ const getUserSe = () => {
   }
 };
 
+// // 사용자 정보 가져오기 수정 본 
+// const getUserSe = () => {
+//   try {
+//     const user = JSON.parse(localStorage.getItem('user'));
+//     if (!user?.id && !user?.user_se) {
+//       throw new Error("로그인 필요");
+//     }
+//     // user.id (혹은 user.user_se) = DB PK
+//     return parseInt(user.id || user.user_se);
+//   } catch (error) {
+//     console.error("사용자 정보 파싱 오류:", error);
+//     // 로그인 기반 서비스에서는 반드시 로그인된 상태여야 함
+//     throw new Error("로그인이 필요합니다.");
+//   }
+// };
+
 export const concertService = {
   // 공연 목록 조회 - 실제 백엔드 API 호출
   async getConcerts() {
