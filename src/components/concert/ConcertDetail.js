@@ -537,17 +537,8 @@ function ConcertDetail() {
   return (
     <div className="concert-detail-container">
       {usingMockData && (
-        <div className="mock-data-banner" style={{
-          background: '#fff3cd',
-          border: '1px solid #ffeaa7',
-          padding: '10px',
-          margin: '10px 0',
-          borderRadius: '4px',
-          textAlign: 'center',
-          fontSize: '14px',
-          color: '#856404'
-        }}>
-           트래픽 급증으로 인해 대기 시간이 지연되었습니다. 기다려주신 고객 여러분께 진심으로 사과드립니다.
+        <div className="mock-data-banner" 
+        >
         </div>
       )}
 
