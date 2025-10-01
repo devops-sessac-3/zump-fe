@@ -77,7 +77,7 @@ function ConcertList() {
             fontSize: '14px',
             color: '#856404'
           }}>
-            백엔드 API 연결 실패 - 목 데이터로 시연 중입니다
+            트래픽 급증으로 인해 대기 시간이 지연되었습니다. 기다려주신 고객 여러분께 진심으로 사과드립니다.
           </div>
         )}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
@@ -184,7 +184,7 @@ function ConcertList() {
           fontSize: '14px',
           color: '#856404'
         }}>
-          백엔드 API 연결 실패 - 목 데이터로 시연 중입니다
+          트래픽 급증으로 인해 대기 시간이 지연되었습니다. 기다려주신 고객 여러분께 진심으로 사과드립니다.
         </div>
       )}
       
