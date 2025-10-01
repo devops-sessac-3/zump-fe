@@ -536,12 +536,6 @@ function ConcertDetail() {
 
   return (
     <div className="concert-detail-container">
-      {usingMockData && (
-        <div className="mock-data-banner" 
-        >
-        </div>
-      )}
-
       {/* 상단 네비게이션 */}
       <div className="concert-header-nav">
         <button 
